@@ -38,6 +38,16 @@ All configuration lives in `pyproject.toml`.
 
 ---
 
+## Requirements
+
+- **Python 3.10+**
+- **pre-commit >= 3.2** — install via `pip install pre-commit`, not your OS package manager.
+  Distro-packaged versions (e.g. `apt install pre-commit`) commonly lag years behind and may not
+  understand this config's stage names, causing an `InvalidConfigError` on commit. Check your
+  version with `pre-commit --version` before reporting a hook issue.
+
+---
+
 ## Pre‑commit Hooks
 
 Pre‑commit automatically runs checks on every commit, including:
