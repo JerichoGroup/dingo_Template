@@ -1,7 +1,7 @@
 # Dingo's Python Project Template
 
 This repository is a **template** for creating high‑quality Python projects with a fully configured development environment.
-It includes strict linting, formatting, type checking, commit‑message validation, and custom code‑quality hooks — all automated through **pre‑commit**.
+It includes strict linting, formatting, type checking, and commit‑message validation — all automated through **pre‑commit**.
 
 Use this template to start new Python projects with consistent, modern, and maintainable standards.
 
@@ -45,10 +45,6 @@ Pre‑commit automatically runs checks on every commit, including:
 - Ruff (lint + format)
 - Mypy (type checking)
 - Gitlint (commit message validation)
-- Custom hooks:
-  - require docstrings for private methods
-  - enforce blank line after docstring
-  - enforce section header formatting
 - Standard hygiene checks:
   - trailing whitespace
   - end‑of‑file newline
@@ -116,23 +112,6 @@ gitlint
 
 ---
 
-## Custom Hooks
-
-Located in `g_tools/hooks/`:
-
-### `check_private_docstrings.py`
-Ensures all private methods (`_method_name`) include docstrings.
-
-### `enforce_blank_line_after_docstring.py`
-Requires a blank line after a functions docstring.
-
-### `enforce_section_headers.py`
-Validates consistency for section headers format inside code.
-
-These run automatically via pre‑commit.
-
----
-
 ## Project Structure
 
 ```
@@ -143,9 +122,6 @@ project/
 │
 ├── tests/              # Test suite
 │   └── ...
-│
-├── g_tools/            # Custom pre-commit hooks
-│   └── hooks/
 │
 ├── pyproject.toml      # Ruff configuration
 ├── .pre-commit-config.yaml

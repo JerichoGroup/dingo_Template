@@ -1,8 +1,14 @@
 [general]
-ignore=B6
+ignore=body-is-missing
+
+[title-max-length]
+line-length=72
+
+[title-min-length]
+min-length=10
 
 [title-must-not-contain-word]
 words=wip,todo,fixme
 
 [title-match-regex]
-regex=^(?!.*(?i)wip)(?!.*(?i)todo)(?!.*(?i)fixme).*
+regex=^[A-Z].*[^.]$
