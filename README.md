@@ -59,9 +59,21 @@ Install the project in editable mode along with the development tools
 pip install -e ".[dev]"
 ```
 
+For a non-editable install (e.g. building an artifact, installing into a
+runtime image, or CI steps that don't need dev tooling):
+
+```bash
+pip install <path to pyproject.toml>
+```
+
 Add runtime dependencies your project needs under `[project.dependencies]` in
 `pyproject.toml`. Add/adjust dev-only tooling under
 `[project.optional-dependencies.dev]`.
+
+`src/` is not limited to a single package — `[tool.setuptools.packages.find]`
+auto-discovers every directory under `src/` containing an `__init__.py` and
+installs each as its own top-level package. See
+[Project Structure](#project-structure) below.
 
 ---
 
@@ -193,6 +205,14 @@ project/
 ├── LICENSE
 └── README.md
 ```
+
+`src/` isn't restricted to a single package. You can add as many packages
+under it as you need (`src/pkg_a/`, `src/pkg_b/`, …) — each directory with an
+`__init__.py` is discovered and installed independently, and both `pytest`
+and the ruff/mypy hooks already traverse all of `src/`, so nothing else needs
+to change. Non-package source (standalone scripts, shared modules without an
+`__init__.py`) is also linted, formatted, and type-checked the same way —
+it's just excluded from what `pip install` packages as importable code.
 
 ---
 
