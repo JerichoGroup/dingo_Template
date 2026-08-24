@@ -2,10 +2,10 @@
 ignore=body-is-missing
 
 [title-max-length]
-line-length=72
+line-length=100
 
 [title-min-length]
-min-length=10
+min-length=5
 
 [title-must-not-contain-word]
 words=wip,todo,fixme

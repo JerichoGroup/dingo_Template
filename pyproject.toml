@@ -1,3 +1,32 @@
+[project]
+name = "dingo-project"
+version = "0.1.0"
+description = "Dingo's Python project template"
+requires-python = ">=3.10"
+readme = "README.md"
+license = "Apache-2.0"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.4",
+    "mypy==1.14.1",
+    "ruff==0.8.2",
+    "pre-commit==4.0.1",
+    "gitlint==0.19.1",
+]
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
 [tool.ruff]
 exclude = [
     ".bzr",
@@ -26,6 +55,9 @@ exclude = [
     "node_modules",
     "site-packages",
     "venv",
+    # ---- Project-specific excludes: add per-project paths/globs below ----
+    # "docker/vendor/",
+    # "legacy/",
 ]
 line-length = 120
 indent-width = 4
@@ -80,3 +112,30 @@ force-sort-within-sections = true
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["D104", "D100"]
+"tests/**" = ["PLR2004", "D103", "ANN201"]
+
+[tool.mypy]
+python_version = "3.10"
+mypy_path = "src"
+files = ["src", "tests"]
+
+# ---- Project-specific excludes: add per-project paths/regex below ----
+exclude = [
+    # '^legacy/',
+]
+
+# Strict-ish baseline. Tighten further (e.g. full `strict = true`) once the
+# codebase is fully typed.
+warn_return_any = true
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+strict_equality = true
+
+# Show clearer output.
+pretty = true
+show_error_codes = true

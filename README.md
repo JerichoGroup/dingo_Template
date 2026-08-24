@@ -48,6 +48,23 @@ All configuration lives in `pyproject.toml`.
 
 ---
 
+## Installation
+
+Dependencies are declared in `pyproject.toml` — there is no `requirements.txt`.
+
+Install the project in editable mode along with the development tools
+(pytest, mypy, ruff, pre-commit, gitlint):
+
+```bash
+pip install -e ".[dev]"
+```
+
+Add runtime dependencies your project needs under `[project.dependencies]` in
+`pyproject.toml`. Add/adjust dev-only tooling under
+`[project.optional-dependencies.dev]`.
+
+---
+
 ## Pre‑commit Hooks
 
 Pre‑commit automatically runs checks on every commit, including:
@@ -85,7 +102,20 @@ pre-commit run ruff
 
 ## Mypy (Static Type Checking)
 
-Mypy enforces type correctness across the codebase.
+Mypy enforces type correctness across the codebase. All settings (strictness,
+excludes, target Python version) live in `[tool.mypy]` in `pyproject.toml`,
+so running `mypy .` locally behaves identically to the pre-commit hook —
+there are no extra flags hidden in `.pre-commit-config.yaml`.
+
+The baseline is strict-ish: untyped/incomplete function definitions,
+unused ignores, and implicit `Optional` are all flagged. Tighten further
+(e.g. `strict = true`) once the codebase is fully typed.
+
+If a third-party dependency ships no type stubs, add the stub package
+(e.g. `types-requests`) under `additional_dependencies` for the `mypy` hook
+in `.pre-commit-config.yaml`, or add a targeted per-module override in
+`pyproject.toml` — avoid a blanket `--ignore-missing-imports`, which silently
+disables type checking for anything unresolved.
 
 Run manually:
 
@@ -93,7 +123,7 @@ Run manually:
 mypy .
 ```
 
-You can also run it with pretty output (already configured in pre‑commit):
+You can also run it with pretty output (already the default via `pretty = true`):
 
 ```bash
 mypy --pretty .
@@ -122,21 +152,45 @@ gitlint
 
 ---
 
+## Excluding Files and Directories
+
+Every tool in this template has a single, obvious place to add per-project
+excludes — useful for generated code, vendored dependencies, or legacy
+directories you don't want linted/type-checked/hooked:
+
+- **Pre-commit (all hooks):** top-level `exclude:` regex at the top of
+  `.pre-commit-config.yaml`. Uncomment and add your own alternatives inside
+  the `(?x)` block.
+- **Ruff:** the `exclude` list in `[tool.ruff]` in `pyproject.toml` already
+  covers common VCS/venv/cache directories; add project-specific paths at
+  the bottom of that list.
+- **Mypy:** the `exclude` list in `[tool.mypy]` in `pyproject.toml` (regex
+  patterns).
+
+Prefer excluding at the narrowest scope that solves your problem (a single
+tool) over the top-level pre-commit exclude, which skips a path for every
+hook.
+
+---
+
 ## Project Structure
 
 ```
 project/
 │
-├── src/                # Application code
-│   └── ...
+├── src/
+│   └── dingo_project/   # Application code (rename to your package name)
+│       ├── __init__.py
+│       └── example.py
 │
-├── tests/              # Test suite
-│   └── ...
+├── tests/               # Test suite
+│   ├── __init__.py
+│   └── test_example.py
 │
-├── pyproject.toml      # Ruff configuration
+├── pyproject.toml       # Project metadata, dependencies, Ruff/mypy/pytest config
 ├── .pre-commit-config.yaml
 ├── .gitlint
-├── requirements.txt
+├── LICENSE
 └── README.md
 ```
 
@@ -218,3 +272,13 @@ You can customize:
 - Add CI workflows
 
 This template is intentionally minimal and focused on code quality and workflow automation.
+
+---
+
+## License
+
+Licensed under the [Apache License, Version 2.0](LICENSE).
+
+When forking this template for a new project, update the copyright holder
+name in the `LICENSE` file and the `license`/`name` fields in
+`pyproject.toml`.

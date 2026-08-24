@@ -1,3 +1,10 @@
+exclude: |
+  (?x)^(
+    # ---- Project-specific excludes: add per-project paths/globs below ----
+    # docker/vendor/.*|
+    # legacy/.*|
+  )$
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
@@ -38,9 +45,11 @@ repos:
     hooks:
       - id: mypy
         stages: [pre-commit]
-        args:
-          - --ignore-missing-imports
-          - --pretty
+        # Settings (strictness, excludes, etc.) live in [tool.mypy] in
+        # pyproject.toml so `mypy .` locally matches this hook exactly.
+        # Add per-package type stubs here as needed, e.g.:
+        # additional_dependencies: ["types-requests", "types-PyYAML"]
+        additional_dependencies: []
 
   - repo: https://github.com/jorisroovers/gitlint
     rev: v0.19.1
