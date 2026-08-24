@@ -48,11 +48,11 @@ All configuration lives in `pyproject.toml`.
 
 ---
 
-## Installation
+## Installing python packages
 
-Dependencies are declared in `pyproject.toml` — there is no `requirements.txt`.
+Dependencies are declared in `pyproject.toml`.
 
-Install the project in editable mode along with the development tools
+Install the package in editable mode along with the development tools
 (pytest, mypy, ruff, pre-commit, gitlint):
 
 ```bash
@@ -166,22 +166,32 @@ gitlint
 
 ## Excluding Files and Directories
 
-Every tool in this template has a single, obvious place to add per-project
-excludes — useful for generated code, vendored dependencies, or legacy
-directories you don't want linted/type-checked/hooked:
+Every tool in this template has a place to add per-project excludes —
+useful for generated code, vendored dependencies, or legacy directories you
+don't want linted/type-checked/hooked:
 
 - **Pre-commit (all hooks):** top-level `exclude:` regex at the top of
   `.pre-commit-config.yaml`. Uncomment and add your own alternatives inside
-  the `(?x)` block.
+  the `(?x)` block. Pre-commit filters the file list against this *before*
+  invoking any hook, so it's the only exclude mechanism guaranteed to work
+  for every tool when run via `pre-commit` / `git commit`.
 - **Ruff:** the `exclude` list in `[tool.ruff]` in `pyproject.toml` already
   covers common VCS/venv/cache directories; add project-specific paths at
-  the bottom of that list.
+  the bottom of that list. This is honored both by `ruff check .` run
+  directly and by the `ruff` pre-commit hook.
 - **Mypy:** the `exclude` list in `[tool.mypy]` in `pyproject.toml` (regex
-  patterns).
+  patterns) — but only when mypy discovers files itself via directory
+  traversal (i.e. running `mypy .` manually). Mypy does **not** apply this
+  `exclude` to files passed to it explicitly, and pre-commit always passes
+  explicit filenames — so this list has no effect on the `mypy` pre-commit
+  hook. To exclude a path from the mypy *hook*, add it to the top-level
+  `exclude:` in `.pre-commit-config.yaml` instead (or in addition, so manual
+  `mypy .` runs match too).
 
 Prefer excluding at the narrowest scope that solves your problem (a single
 tool) over the top-level pre-commit exclude, which skips a path for every
-hook.
+hook — except for mypy, where the top-level pre-commit exclude is the only
+one that reliably works.
 
 ---
 
